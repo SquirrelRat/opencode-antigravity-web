@@ -121,6 +121,7 @@ export interface SearchResult {
   sources: Array<{ title: string; url: string }>;
   searchQueries: string[];
   urlsRetrieved: Array<{ url: string; status: string }>;
+  modelUsed?: string;
 }
 
 /**

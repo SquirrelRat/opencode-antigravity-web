@@ -274,6 +274,11 @@ function formatSearchResult(result: SearchResult): string {
     }
   }
 
+  if (result.modelUsed) {
+    lines.push("");
+    lines.push(`_{model: ${result.modelUsed}}_`);
+  }
+
   return lines.join("\n");
 }
 
@@ -400,6 +405,7 @@ export async function executeSearch(
             const data = (await response.json()) as AntigravitySearchResponse;
             const result = parseSearchResponse(data);
             if (result.text && !result.text.startsWith("Error:")) {
+              result.modelUsed = model;
               return formatSearchResult(result);
             }
           }
@@ -579,6 +585,7 @@ export async function readUrlContent(
             const result = parseSearchResponse(data);
 
             if (result.text && !result.text.startsWith("Error:")) {
+              result.modelUsed = model;
               // Format specifically for URL content
               const lines: string[] = [];
               lines.push(`## Content from ${targetUrl}\n`);
@@ -589,6 +596,11 @@ export async function readUrlContent(
                 if (urlStatus && urlStatus.status !== "URL_RETRIEVAL_STATUS_SUCCESS") {
                   lines.push(`\n**Note:** URL retrieval status: ${urlStatus.status}`);
                 }
+              }
+
+              if (model) {
+                lines.push("");
+                lines.push(`_{model: ${model}}_`);
               }
 
               return lines.join("\n");
